@@ -1,0 +1,28 @@
+{
+  "name": "colors2geometries",
+  "version": "1.0.0",
+  "description": "take an image as input and convert the colors into geometries",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+   "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/guillaume-gomez/colors2geometries.git"
+  },
+  "keywords": [
+    "typescript",
+    "image-processing",
+    "3d"
+  ],
+  "author": "Guillaume Gomez <guillaume.gomez846@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guillaume-gomez/colors2geometries/issues"
+  },
+  "homepage": "https://github.com/guillaume-gomez/colors2geometries#readme"
+}
