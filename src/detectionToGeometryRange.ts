@@ -59,8 +59,6 @@ export function generateFlagsByPixelsColorOccurance(imageDomId: string) : THREE.
     const src = cv.imread(imageDomId);
     const colorPixels = computePalette(src);
     let meshes : THREE.Mesh[] = [];
-    console.log(colorPixels)
-
 
     let binaryThreshold: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     colorPixels.forEach(([r, g, b], index) => {
