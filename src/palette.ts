@@ -10,7 +10,7 @@ interface ColorInImage {
   [key:string]: number;
 }
 
-export function computePalette(image: Mat) : pixel[] {
+export function computePalette(image: Mat, precision: number = 0.005) : pixel[] {
   // loop through pixels to determine colors
   let colorsInImage : ColorInImage = {};
   for(let x = 0; x < image.cols; x++) {
@@ -24,7 +24,7 @@ export function computePalette(image: Mat) : pixel[] {
     }
   }
 
-  const filteredColorInImage : Array<[string, number]> = filterColorInImageTo(colorsInImage, image.cols * image.rows, .005);
+  const filteredColorInImage : Array<[string, number]> = filterColorInImageTo(colorsInImage, image.cols * image.rows, precision);
 
   const palette : pixel[] = filteredColorInImage.map(([pixel, _]) => convertPixelStringToPixelNumber(pixel));
   return palette;
