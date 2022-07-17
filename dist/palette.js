@@ -14,7 +14,7 @@ export function computePalette(image) {
             }
         }
     }
-    const filteredColorInImage = filterColorInImageTo(colorsInImage, image.cols * image.rows, .01);
+    const filteredColorInImage = filterColorInImageTo(colorsInImage, image.cols * image.rows, .005);
     const palette = filteredColorInImage.map(([pixel, _]) => convertPixelStringToPixelNumber(pixel));
     return palette;
 }
