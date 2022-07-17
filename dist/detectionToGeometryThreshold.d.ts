@@ -1,2 +1,2 @@
 import * as THREE from 'three';
-export declare function generateFlagsByThreshold(cv: any, imageDomId: string, minThreshold: number, maxThreshold: number): THREE.Mesh[];
+export declare function generateFlagsByThreshold(imageDomId: string, minThreshold: number, maxThreshold: number): THREE.Mesh[];

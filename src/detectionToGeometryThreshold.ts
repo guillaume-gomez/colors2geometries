@@ -54,7 +54,7 @@ function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat) : 
 }
 
 //use threshold to detect colors and shape with a binarythreshold and its opposite
-export function generateFlagsByThreshold(cv: any, imageDomId :string, minThreshold: number, maxThreshold: number) : THREE.Mesh[] {
+export function generateFlagsByThreshold(imageDomId :string, minThreshold: number, maxThreshold: number) : THREE.Mesh[] {
     const src = cv.imread(imageDomId);
     const greyScaleImage: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     const binaryThreshold: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);

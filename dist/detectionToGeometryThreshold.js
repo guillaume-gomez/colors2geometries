@@ -43,7 +43,7 @@ function generateGeometries(contours, hierarchy, image) {
     return meshes;
 }
 //use threshold to detect colors and shape with a binarythreshold and its opposite
-export function generateFlagsByThreshold(cv, imageDomId, minThreshold, maxThreshold) {
+export function generateFlagsByThreshold(imageDomId, minThreshold, maxThreshold) {
     const src = cv.imread(imageDomId);
     const greyScaleImage = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     const binaryThreshold = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
