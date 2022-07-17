@@ -1,5 +1,4 @@
-export function sayHello(message) {
-    if (message === void 0) { message = "hi"; }
+export function sayHello(message = "hi") {
     console.log(message);
 }
 export function sayGoodbye() {
