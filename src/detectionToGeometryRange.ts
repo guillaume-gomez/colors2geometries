@@ -1,9 +1,11 @@
 import { Mat, MatVector } from "opencv-ts";
-import { computePalette, getRandomColors } from "./palette";
+import { computePalette, getRandomColors, pixel } from "./palette";
 import { getParent } from "./hierarchyUtils";
 import { generateGeometry, fromContoursToGeometryVertices } from "./common";
 import * as THREE from 'three';
 import cv from "opencv-ts";
+// this library is not typescript friendly :)
+let RgbQuant = require('rgbquant');
 
 interface Dic {
     [key: string]: number
@@ -52,24 +54,29 @@ function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat, [R
     }
     return meshes;
 }
+/*
+function quantize(src: Mat, colors: number) {
+  const rgbquant = new RgbQuant({colors , dithKern: "FloydSteinberg", minHueCols: 0});
+  rgbquant.sample(image.data.slice());
+  const rawImage = rgbquant.reduce(image.data.slice());
+  const imageData = new ImageData(Uint8ClampedArray.from(rawImage), image.width, image.height);
+  [imageData, rgbquant.palette()];
+}
+*/
 
-
-// find all the colors in the image and run findcountours based on this colors
-export function generateFlagsByPixelsColorOccurance(imageDomId: string) : THREE.Mesh[] {
-    const src = cv.imread(imageDomId);
-    const colorPixels = computePalette(src);
+function fromMatToGeometries(src: Mat, palette: pixel[]) {
     let meshes : THREE.Mesh[] = [];
-
     let binaryThreshold: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
-    colorPixels.forEach(([r, g, b], index) => {
-      let low = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(r - 1, g - 1, b -1, 255));
-      let high = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(r + 1, g + 1, b + 1, 255));
 
-      let contours : MatVector = new cv.MatVector();
-      let hierarchy : Mat = new cv.Mat();
+    palette.forEach(([r, g, b], index) => {
+        let low = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(r - 1, g - 1, b -1, 255));
+        let high = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(r + 1, g + 1, b + 1, 255));
 
-      cv.inRange(src, low, high, binaryThreshold);
-      cv.findContours(binaryThreshold, contours, hierarchy, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE);
+        let contours : MatVector = new cv.MatVector();
+        let hierarchy : Mat = new cv.Mat();
+
+        cv.inRange(src, low, high, binaryThreshold);
+        cv.findContours(binaryThreshold, contours, hierarchy, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE);
 
         //DEBUG
         /*const dst: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
@@ -88,13 +95,29 @@ export function generateFlagsByPixelsColorOccurance(imageDomId: string) : THREE.
         cv.imshow(`canvasTest${index+1}`, dst);*/
 
 
-      meshes = [...meshes, ...generateGeometries(contours, hierarchy, src, [r,g,b], index)];
+        meshes = [...meshes, ...generateGeometries(contours, hierarchy, src, [r,g,b], index)];
 
 
-      contours.delete();
-      hierarchy.delete();
+        contours.delete();
+        hierarchy.delete();
     });
 
     src.delete();
     return meshes;
+}
+
+
+/*export function generateGeometriesByQuantification(imageDomId: string, nbColors: number = 10) {
+    const src = cv.imread(imageDomId);
+    const [quantifiedImage, palette] = quantize(src.getDataAsArray(), nbColors);
+    const quantifiedMat = cv.matFromImageData(quantifiedImage);
+    return fromMatToGeometries(quantifiedMat, palette);
+}
+*/
+
+// find all the colors in the image and run findcountours based on this colors
+export function generateGeometriesByColorOccurance(imageDomId: string, precision: number = 0.05) : THREE.Mesh[] {
+    const src = cv.imread(imageDomId);
+    const palette = computePalette(src, precision);
+    return fromMatToGeometries(src, palette);
 }
