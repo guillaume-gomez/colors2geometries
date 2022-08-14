@@ -54,13 +54,14 @@ function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat) : 
     return meshes;
 }
 
+
 //use threshold to detect colors and shape with a binarythreshold and its opposite
 export function generateFlagsByThreshold(imageDomId :string, minThreshold: number, maxThreshold: number) : THREE.Mesh[] {
     const src = cv.imread(imageDomId);
     const greyScaleImage: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     const binaryThreshold: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     const inverseBinaryThreshold: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
-    const dst: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
+    const dst: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
     let meshes : THREE.Mesh[] = [];
 
     cv.cvtColor(src, greyScaleImage, cv.COLOR_RGBA2GRAY, 0);

@@ -14,7 +14,7 @@ export function getColorRGB(image: Mat, x: number, y: number) : [number, number,
 }
 
 
-function getColorRGBA(image: Mat, x: number, y: number) : pixelRGBA {
+export function getColorRGBA(image: Mat, x: number, y: number) : pixelRGBA {
     const { data, cols } = image;
     const channels = image.channels();
 
@@ -26,7 +26,7 @@ function getColorRGBA(image: Mat, x: number, y: number) : pixelRGBA {
 }
 
 
-function distance([x1, y1, z1, a1]: pixelRGBA, [x2, y2, z2, a2]: pixelRGBA): number {
+export function distance([x1, y1, z1, a1]: pixelRGBA, [x2, y2, z2, a2]: pixelRGBA): number {
   const deltaR = (x1 - x2);
   const deltaG = (y1 - y2);
   const deltaB = (z1 - z2);
