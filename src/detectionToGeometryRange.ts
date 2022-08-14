@@ -1,7 +1,7 @@
 import { Mat, MatVector } from "opencv-ts";
 import { computePalette, getRandomColors, pixel } from "./palette";
 import { getParent } from "./hierarchyUtils";
-import { generateGeometry, fromContoursToGeometryVertices } from "./common";
+import { generateGeometry, fromContoursToGeometryVertices } from "./geometries";
 import * as THREE from 'three';
 import cv from "opencv-ts";
 // this library is not typescript friendly :)

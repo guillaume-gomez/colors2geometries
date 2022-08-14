@@ -1,7 +1,7 @@
 import cv, { Mat, MatVector } from "opencv-ts";
-import { getColor, getRandomColors } from "./palette";
+import { getColorRGB, getRandomColors } from "./palette";
 import { getParent } from "./hierarchyUtils";
-import { generateGeometry, fromContoursToGeometryVertices } from "./common";
+import { generateGeometry, fromContoursToGeometryVertices } from "./geometries";
 import * as THREE from 'three';
 
 
@@ -15,7 +15,7 @@ function geneterateColour(contours: MatVector, hierarchy: Mat, contourIndex: num
     const centroid : any = cv.moments(contour);
     const cX = Math.ceil(centroid["m10"] / centroid["m00"]);
     const cY = Math.ceil(centroid["m01"] / centroid["m00"]);
-    const centroidColor = getColor(image, cX, cY);
+    const centroidColor = getColorRGB(image, cX, cY);
 
     const reduced = [...randomColors, centroidColor].reduce(function (acc: Dic, curr : [number, number, number]) {
          return acc[curr.toString()] ? ++acc[curr.toString()] : acc[curr.toString()] = 1, acc
