@@ -6,8 +6,6 @@ import { getParent } from "./hierarchyUtils";
 import { generateGeometry, fromContoursToGeometryVertices } from "./geometries";
 import * as THREE from 'three';
 import cv from "opencv-ts";
-// this library is not typescript friendly :)
-let RgbQuant = require('rgbquant');
 
 interface Dic {
     [key: string]: number
@@ -56,15 +54,6 @@ function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat, [R
     }
     return meshes;
 }
-/*
-function quantize(src: Mat, colors: number) {
-  const rgbquant = new RgbQuant({colors , dithKern: "FloydSteinberg", minHueCols: 0});
-  rgbquant.sample(image.data.slice());
-  const rawImage = rgbquant.reduce(image.data.slice());
-  const imageData = new ImageData(Uint8ClampedArray.from(rawImage), image.width, image.height);
-  [imageData, rgbquant.palette()];
-}
-*/
 
 function fromMatToGeometries(src: Mat, palette: pixel[]) {
     let meshes : THREE.Mesh[] = [];
@@ -107,15 +96,6 @@ function fromMatToGeometries(src: Mat, palette: pixel[]) {
     src.delete();
     return meshes;
 }
-
-
-/*export function generateGeometriesByQuantification(imageDomId: string, nbColors: number = 10) {
-    const src = cv.imread(imageDomId);
-    const [quantifiedImage, palette] = quantize(src.getDataAsArray(), nbColors);
-    const quantifiedMat = cv.matFromImageData(quantifiedImage);
-    return fromMatToGeometries(quantifiedMat, palette);
-}
-*/
 
 // find all the colors in the image and run findcountours based on this colors
 export function generateGeometriesByColorOccurance(imageDomId: string, precision: number = 0.05) : THREE.Mesh[] {
