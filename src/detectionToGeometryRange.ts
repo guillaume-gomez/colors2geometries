@@ -1,5 +1,7 @@
 import { Mat, MatVector } from "opencv-ts";
-import { computePalette, getRandomColors, pixel } from "./palette";
+import { computePalette } from "./palette";
+import getRandomColors from './getRandomColors';
+import { pixel } from "./colors";
 import { getParent } from "./hierarchyUtils";
 import { generateGeometry, fromContoursToGeometryVertices } from "./geometries";
 import * as THREE from 'three';
