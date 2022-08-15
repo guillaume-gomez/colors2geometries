@@ -4,6 +4,7 @@ import getRandomColors from './getRandomColors';
 import { pixel, pixelRGBA } from "./colors";
 import { getParent } from "./hierarchyUtils";
 import { generateGeometry, fromContoursToGeometryVertices } from "./geometries";
+import { imageQuantified } from "./quantification";
 import * as THREE from 'three';
 import cv from "opencv-ts";
 
@@ -105,4 +106,18 @@ export function generateGeometriesByColorOccurance(imageDomId: string, precision
         precision: precision
     });
     return fromMatToGeometries(src, palette);
+}
+
+export function generateGeometriesByNumberOfColors(imageDomId: string, numberOfColors: number = 20) : THREE.Mesh[] {
+    const src = cv.imread(imageDomId);
+    const image = document.getElementById(imageDomId);
+    if(!image) {
+        throw new Error(`Cannot find the element with the id '${imageDomId}'`)
+    }
+    const palette = computePalette("quantification", {
+    image: image as HTMLImageElement,
+    numberOfColors
+    });
+    const quantifiedImage = imageQuantified(src, palette);
+    return fromMatToGeometries(quantifiedImage, palette);
 }

@@ -15,20 +15,15 @@ function findNearestColor(pixel: pixelRGBA, palette: pixelRGBA[]) : pixelRGBA {
   return nearestColor;
 }
 
-function imageQuantified(image: HTMLImageElement, paletteSize: number) : Mat {
-  const palette = computePalette("quantification", {
-    image: image,
-    numberOfColors: paletteSize
-  });
-  const src = cv.imread(image);
-  const target = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
+export function imageQuantified(image: Mat, palette: pixelRGBA[]) : Mat {
+  const target = new cv.Mat.zeros(image.rows, image.cols, cv.CV_8UC4);
   const channels = target.channels();
   const { cols, rows } = target;
 
   for(let x = 0; x < cols; x++) {
     for(let y = 0; y < rows; y++) {
-      const [R, G, B, A] = findNearestColor(getColorRGBA(src, x,y), palette);
-      target.data[y * cols * channels + x * channels] = R;
+      const [R, G, B, A] = findNearestColor(getColorRGBA(image, x,y), palette);
+      target.data[y * cols * channels + x * channels]     = R;
       target.data[y * cols * channels + x * channels + 1] = G;
       target.data[y * cols * channels + x * channels + 2] = B;
       target.data[y * cols * channels + x * channels + 3] = A;
