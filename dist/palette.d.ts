@@ -1,5 +1,10 @@
-import { Mat, MatVector } from "opencv-ts";
-export declare type pixel = [number, number, number];
-export declare function computePalette(image: Mat): pixel[];
-export declare function getColor(image: Mat, x: number, y: number): [number, number, number];
-export declare function getRandomColors(contours: MatVector, hierarchy: Mat, contourIndex: number, image: Mat, nbColors?: number): Array<[number, number, number]>;
+import { Mat } from "opencv-ts";
+import { pixelRGBA } from "./colors";
+declare type paletteAlgorithm = "threshold" | "quantification";
+interface computePaletteParams {
+    precision?: number;
+    numberOfColors?: number;
+    image: HTMLImageElement | Mat;
+}
+export declare function computePalette(type: paletteAlgorithm, params: computePaletteParams): pixelRGBA[];
+export {};

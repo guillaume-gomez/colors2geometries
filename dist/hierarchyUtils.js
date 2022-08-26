@@ -1,3 +1,7 @@
+/**
+ Tools function to filter the data from opencv
+ see more info "__insert_link__"
+**/
 function getHierarchyForContours(hierarchy, index) {
     const next = hierarchy.data32S[index * hierarchy.channels()];
     const previous = hierarchy.data32S[index * hierarchy.channels() + 1];

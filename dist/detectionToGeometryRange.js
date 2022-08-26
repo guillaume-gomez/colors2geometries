@@ -1,6 +1,8 @@
-import { computePalette, getRandomColors } from "./palette";
+import { computePalette } from "./palette";
+import getRandomColors from './getRandomColors';
 import { getParent } from "./hierarchyUtils";
-import { generateGeometry, fromContoursToGeometryVertices } from "./common";
+import { generateGeometry, fromContoursToGeometryVertices } from "./geometries";
+import { imageQuantified } from "./quantification";
 import * as THREE from 'three';
 import cv from "opencv-ts";
 function checkColor(contours, hierarchy, image, color, index) {
@@ -42,14 +44,10 @@ function generateGeometries(contours, hierarchy, image, [R, G, B], index) {
     }
     return meshes;
 }
-// find all the colors in the image and run findcountours based on this colors
-export function generateFlagsByPixelsColorOccurance(imageDomId) {
-    const src = cv.imread(imageDomId);
-    const colorPixels = computePalette(src);
+function fromMatToGeometries(src, palette) {
     let meshes = [];
-    console.log(colorPixels);
-    let binaryThreshold = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
-    colorPixels.forEach(([r, g, b], index) => {
+    let binaryThreshold = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
+    palette.forEach(([r, g, b], index) => {
         let low = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(r - 1, g - 1, b - 1, 255));
         let high = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(r + 1, g + 1, b + 1, 255));
         let contours = new cv.MatVector();
@@ -77,4 +75,27 @@ export function generateFlagsByPixelsColorOccurance(imageDomId) {
     });
     src.delete();
     return meshes;
+}
+// find all the colors in the image and run findcountours based on this colors
+export function generateGeometriesByColorOccurance(imageDomId, precision = 0.05) {
+    const src = cv.imread(imageDomId);
+    const palette = computePalette("threshold", {
+        image: src,
+        precision: precision
+    });
+    return fromMatToGeometries(src, palette);
+}
+export function generateGeometriesByNumberOfColors(imageDomId, numberOfColors = 20) {
+    const src = cv.imread(imageDomId);
+    const image = document.getElementById(imageDomId);
+    if (!image) {
+        throw new Error(`Cannot find the element with the id '${imageDomId}'`);
+    }
+    debugger
+    const palette = computePalette("quantification", {
+        image: image,
+        numberOfColors
+    });
+    const quantifiedImage = imageQuantified(src, palette);
+    return fromMatToGeometries(quantifiedImage, palette);
 }

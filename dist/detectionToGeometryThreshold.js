@@ -1,7 +1,8 @@
 import cv from "opencv-ts";
-import { getColor, getRandomColors } from "./palette";
+import getRandomColors from "./getRandomColors";
+import { getColorRGB } from "./colors";
 import { getParent } from "./hierarchyUtils";
-import { generateGeometry, fromContoursToGeometryVertices } from "./common";
+import { generateGeometry, fromContoursToGeometryVertices } from "./geometries";
 import * as THREE from 'three';
 function geneterateColour(contours, hierarchy, contourIndex, image) {
     const contour = contours.get(contourIndex);
@@ -9,7 +10,7 @@ function geneterateColour(contours, hierarchy, contourIndex, image) {
     const centroid = cv.moments(contour);
     const cX = Math.ceil(centroid["m10"] / centroid["m00"]);
     const cY = Math.ceil(centroid["m01"] / centroid["m00"]);
-    const centroidColor = getColor(image, cX, cY);
+    const centroidColor = getColorRGB(image, cX, cY);
     const reduced = [...randomColors, centroidColor].reduce(function (acc, curr) {
         return acc[curr.toString()] ? ++acc[curr.toString()] : acc[curr.toString()] = 1, acc;
     }, {});
@@ -48,7 +49,7 @@ export function generateFlagsByThreshold(imageDomId, minThreshold, maxThreshold)
     const greyScaleImage = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     const binaryThreshold = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     const inverseBinaryThreshold = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
-    const dst = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
+    const dst = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
     let meshes = [];
     cv.cvtColor(src, greyScaleImage, cv.COLOR_RGBA2GRAY, 0);
     cv.threshold(greyScaleImage, binaryThreshold, minThreshold, maxThreshold, cv.THRESH_BINARY);

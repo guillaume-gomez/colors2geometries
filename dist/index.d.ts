@@ -1,2 +1,2 @@
 export { generateFlagsByThreshold } from './detectionToGeometryThreshold';
-export { generateFlagsByPixelsColorOccurance } from './detectionToGeometryRange';
+export { generateGeometriesByColorOccurance, generateGeometriesByNumberOfColors } from './detectionToGeometryRange';
