@@ -23,7 +23,7 @@ function checkColor(contours, hierarchy, image, color, index) {
     return R === color[0] && G === color[1] && B === color[2];
 }
 function generateGeometries(contours, hierarchy, image, [R, G, B], index) {
-    let meshes = [];
+    let group = new THREE.Group();
     const offsetColor = 0.1;
     const offsetHierarchy = 0.3;
     const { rows, cols } = image;
@@ -40,12 +40,12 @@ function generateGeometries(contours, hierarchy, image, [R, G, B], index) {
         const mesh = new THREE.Mesh(geometry, material);
         const child = getParent(hierarchy, i);
         mesh.position.z = index * offsetColor + (child / (hierarchy.data32S.length / 4)) * offsetHierarchy;
-        meshes.push(mesh);
+        group.add(mesh);
     }
-    return meshes;
+    return group;
 }
 function fromMatToGeometries(src, palette) {
-    let meshes = [];
+    let groups = [];
     let binaryThreshold = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
     palette.forEach(([r, g, b], index) => {
         let low = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(r - 1, g - 1, b - 1, 255));
@@ -69,12 +69,12 @@ function fromMatToGeometries(src, palette) {
             cv.drawContours(dst, contours, i, color, 5, cv.LINE_8, hierarchy, 100);
         }
         cv.imshow(`canvasTest${index+1}`, dst);*/
-        meshes = [...meshes, ...generateGeometries(contours, hierarchy, src, [r, g, b], index)];
+        groups = [...groups, generateGeometries(contours, hierarchy, src, [r, g, b], index)];
         contours.delete();
         hierarchy.delete();
     });
     src.delete();
-    return meshes;
+    return groups;
 }
 // find all the colors in the image and run findcountours based on this colors
 export function generateGeometriesByColorOccurance(imageDomId, precision = 0.05) {
