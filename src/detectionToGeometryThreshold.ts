@@ -36,8 +36,8 @@ function geneterateColour(contours: MatVector, hierarchy: Mat, contourIndex: num
     return new THREE.Color(R/255, G/255, B/255);
 }
 
-function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat) : THREE.Mesh[] {
-    let meshes : THREE.Mesh[] = [];
+function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat) : THREE.Group {
+    let group  = new THREE.Group();
     const offset = 0.001;
     const { rows, cols } =  image;
     for (let i = 0; i < contours.size(); ++i) {
@@ -49,20 +49,20 @@ function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat) : 
         const mesh = new THREE.Mesh(geometry, material);
         const child = getParent(hierarchy, i);
         mesh.position.z = child * offset;
-        meshes.push(mesh);
+        group.add(mesh);
     }
-    return meshes;
+    return group;
 }
 
 
 //use threshold to detect colors and shape with a binarythreshold and its opposite
-export function generateFlagsByThreshold(imageDomId :string, minThreshold: number, maxThreshold: number) : THREE.Mesh[] {
+export function generateFlagsByThreshold(imageDomId :string, minThreshold: number, maxThreshold: number) : THREE.Group[] {
     const src = cv.imread(imageDomId);
     const greyScaleImage: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     const binaryThreshold: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     const inverseBinaryThreshold: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
     const dst: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
-    let meshes : THREE.Mesh[] = [];
+    let groups : THREE.Group[] = [];
 
     cv.cvtColor(src, greyScaleImage, cv.COLOR_RGBA2GRAY, 0);
     cv.threshold(greyScaleImage, binaryThreshold, minThreshold, maxThreshold, cv.THRESH_BINARY);
@@ -71,7 +71,7 @@ export function generateFlagsByThreshold(imageDomId :string, minThreshold: numbe
     let contours : MatVector = new cv.MatVector();
     let hierarchy : Mat = new cv.Mat();
     cv.findContours(binaryThreshold, contours, hierarchy, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE);
-    meshes = [...meshes, ...generateGeometries(contours, hierarchy, src)];
+    groups = [...groups, generateGeometries(contours, hierarchy, src)];
 
     contours.delete();
     hierarchy.delete();
@@ -101,5 +101,5 @@ export function generateFlagsByThreshold(imageDomId :string, minThreshold: numbe
     contours.delete();
     hierarchy.delete();
 
-    return meshes;
+    return groups;
 }
