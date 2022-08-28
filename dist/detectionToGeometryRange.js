@@ -91,7 +91,6 @@ export function generateGeometriesByNumberOfColors(imageDomId, numberOfColors = 
     if (!image) {
         throw new Error(`Cannot find the element with the id '${imageDomId}'`);
     }
-    debugger
     const palette = computePalette("quantification", {
         image: image,
         numberOfColors
