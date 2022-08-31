@@ -3,3 +3,5 @@ export {
     generateGeometriesByColorOccurance,
     generateGeometriesByNumberOfColors
 } from './detectionToGeometryRange';
+
+export { groupsByColor } from "./meshUtils";

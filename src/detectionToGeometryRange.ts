@@ -56,10 +56,6 @@ function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat, [R
     return meshes;
 }
 
-/*function groupByColor(meshes: THREE.Mesh[], preserveHierarchy: boolean = false) : THREE.Group[] {
-
-}*/
-
 function fromMatToGeometries(src: Mat, palette: pixelRGBA[]) : THREE.Mesh[] {
     let meshes : THREE.Mesh[] = [];
     let binaryThreshold: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
