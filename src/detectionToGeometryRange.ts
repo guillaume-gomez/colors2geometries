@@ -33,8 +33,8 @@ function checkColor(contours : MatVector, hierarchy: Mat, image: Mat, color: [nu
     return R === color[0] && G === color[1] && B === color[2];
 }
 
-function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat, [R, G, B]: [number, number, number], index: number) : THREE.Group {
-    let group = new THREE.Group();
+function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat, [R, G, B]: [number, number, number], index: number) : THREE.Mesh[] {
+    let meshes : THREE.Mesh[] = [];
     const offsetColor = 0.1;
     const offsetHierarchy = 0.3;
     const { rows, cols } =  image;
@@ -51,13 +51,13 @@ function generateGeometries(contours : MatVector, hierarchy: Mat, image: Mat, [R
         const mesh = new THREE.Mesh(geometry, material);
         const child = getParent(hierarchy, i);
         mesh.position.z = index * offsetColor + (child / (hierarchy.data32S.length/4)) * offsetHierarchy;
-        group.add(mesh);
+        meshes.push(mesh);
     }
-    return group;
+    return meshes;
 }
 
-function fromMatToGeometries(src: Mat, palette: pixelRGBA[]) {
-    let groups : THREE.Group[] = [];
+function fromMatToGeometries(src: Mat, palette: pixelRGBA[]) : THREE.Mesh[] {
+    let meshes : THREE.Mesh[] = [];
     let binaryThreshold: Mat = new cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC4);
 
     palette.forEach(([r, g, b], index) => {
@@ -87,7 +87,7 @@ function fromMatToGeometries(src: Mat, palette: pixelRGBA[]) {
         cv.imshow(`canvasTest${index+1}`, dst);*/
 
 
-        groups = [...groups, generateGeometries(contours, hierarchy, src, [r,g,b], index)];
+        meshes = [...meshes, ...generateGeometries(contours, hierarchy, src, [r,g,b], index)];
 
 
         contours.delete();
@@ -95,11 +95,11 @@ function fromMatToGeometries(src: Mat, palette: pixelRGBA[]) {
     });
 
     src.delete();
-    return groups;
+    return meshes;
 }
 
 // find all the colors in the image and run findcountours based on this colors
-export function generateGeometriesByColorOccurance(imageDomId: string, precision: number = 0.05) : THREE.Group[] {
+export function generateGeometriesByColorOccurance(imageDomId: string, precision: number = 0.05) : THREE.Mesh[] {
     const src = cv.imread(imageDomId);
     const palette = computePalette("threshold", {
         image: src,
@@ -108,7 +108,7 @@ export function generateGeometriesByColorOccurance(imageDomId: string, precision
     return fromMatToGeometries(src, palette);
 }
 
-export function generateGeometriesByNumberOfColors(imageDomId: string, numberOfColors: number = 20) : THREE.Group[] {
+export function generateGeometriesByNumberOfColors(imageDomId: string, numberOfColors: number = 20) : THREE.Mesh[] {
     const src = cv.imread(imageDomId);
     const image = document.getElementById(imageDomId);
     if(!image) {
