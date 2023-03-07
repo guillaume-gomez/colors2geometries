@@ -121,3 +121,7 @@ export function generateGeometriesByNumberOfColors(imageDomId: string, numberOfC
     const quantifiedImage = imageQuantified(src, palette);
     return fromMatToGeometries(quantifiedImage, palette);
 }
+
+export function originalPositionMeshes(meshes: THREE.Mesh[]) : THREE.Vector3[] {
+    return meshes.map(mesh => mesh.position);
+}

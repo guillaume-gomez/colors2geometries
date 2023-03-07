@@ -1,7 +1,8 @@
 export { generateFlagsByThreshold } from './detectionToGeometryThreshold';
 export {
     generateGeometriesByColorOccurance,
-    generateGeometriesByNumberOfColors
+    generateGeometriesByNumberOfColors,
+    originalPositionMeshes
 } from './detectionToGeometryRange';
 
 export { groupsByColor } from "./meshUtils";

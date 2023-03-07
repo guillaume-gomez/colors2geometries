@@ -1,6 +1,6 @@
 import { Mat } from "opencv-ts";
 import { pixelRGBA } from "./colors";
-declare type paletteAlgorithm = "threshold" | "quantification";
+type paletteAlgorithm = "threshold" | "quantification";
 interface computePaletteParams {
     precision?: number;
     numberOfColors?: number;

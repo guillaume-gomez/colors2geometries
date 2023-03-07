@@ -98,3 +98,6 @@ export function generateGeometriesByNumberOfColors(imageDomId, numberOfColors = 
     const quantifiedImage = imageQuantified(src, palette);
     return fromMatToGeometries(quantifiedImage, palette);
 }
+export function originalPositionMeshes(meshes) {
+    return meshes.map(mesh => mesh.position);
+}
